@@ -1855,6 +1855,7 @@ TEST_F(JsonRpcServiceUnitTest, IsValidDomain) {
 
 TEST_F(JsonRpcServiceUnitTest, GetERC721OwnerOf) {
   bool callback_called = false;
+
   json_rpc_service_->GetERC721OwnerOf(
       "", "0x1", mojom::kMainnetChainId,
       base::BindOnce(&OnStringResponse, &callback_called,
