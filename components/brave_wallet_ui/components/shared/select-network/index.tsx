@@ -1,20 +1,16 @@
 import * as React from 'react'
 import { useSelector } from 'react-redux'
+
 import SelectNetworkItem from '../select-network-item'
 import { BraveWallet, WalletState } from '../../../constants/types'
 
-export interface Props {
-  networks: BraveWallet.NetworkInfo[]
-  selectedNetwork: BraveWallet.NetworkInfo
-  onSelectNetwork: (network: BraveWallet.NetworkInfo) => () => void
-}
-
-function SelectNetwork (props: Props) {
+function SelectNetwork () {
   // redux
   const {
-    accounts
+    accounts,
+    networkList: networks,
+    selectedNetwork
   } = useSelector((state: { wallet: WalletState }) => state.wallet)
-  const { networks, onSelectNetwork, selectedNetwork } = props
 
   const hasSolAccount = React.useMemo(() => { return accounts.some(account => account.coin === BraveWallet.CoinType.SOL) }, [accounts])
   const hasFilAccount = React.useMemo(() => { return accounts.some(account => account.coin === BraveWallet.CoinType.FIL) }, [accounts])
@@ -41,7 +37,6 @@ function SelectNetwork (props: Props) {
           selectedNetwork={selectedNetwork}
           key={`${network.chainId}-${network.coin}`}
           network={network}
-          onSelectNetwork={onSelectNetwork(network)}
         />
       )}
     </>
