@@ -960,6 +960,8 @@ void BraveWalletProviderImpl::CommonRequestOrSendAsync(
                          std::move(id));
       return;
     }
+    token->chain_id = json_rpc_service_->GetChainId(mojom::CoinType::ETH);
+    token->coin = mojom::CoinType::ETH;
     AddSuggestToken(std::move(token), std::move(callback), std::move(id));
   } else if (method == kRequestPermissionsMethod) {
     std::vector<std::string> restricted_methods;
