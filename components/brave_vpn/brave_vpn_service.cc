@@ -238,7 +238,12 @@ void BraveVpnService::OnCreated() {
 void BraveVpnService::OnCreateFailed() {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   VLOG(2) << __func__;
-  UpdateAndNotifyConnectionStateChange(ConnectionState::CONNECT_FAILED);
+
+  // Clear connecting cancel request.
+  if (cancel_connecting_)
+    cancel_connecting_ = false;
+
+  UpdateAndNotifyConnectionStateChange(ConnectionState::CONNECT_NOT_ALLOWED);
 }
 
 void BraveVpnService::OnRemoved() {
