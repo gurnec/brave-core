@@ -64,6 +64,8 @@ std::string GetStringFor(ConnectionState state) {
       return "Disconnecting";
     case ConnectionState::CONNECT_FAILED:
       return "Connect failed";
+    case ConnectionState::CONNECT_NOT_ALLOWED:
+      return "Connect not allowed";
     default:
       NOTREACHED();
   }
