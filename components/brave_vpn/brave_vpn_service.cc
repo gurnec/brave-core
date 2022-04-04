@@ -607,6 +607,31 @@ bool BraveVpnService::ParseAndCacheRegionList(const base::Value& region_value) {
 void BraveVpnService::OnFetchTimezones(const std::string& timezones_list,
                                        bool success) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  // Extra step: sanitize the returned JSON
+  data_decoder::JsonSanitizer::Sanitize(
+      timezones_list,
+      base::BindOnce(&BraveVpnService::OnFetchTimezonesSanitized,
+                     weak_ptr_factory_.GetWeakPtr(), success));
+}
+
+void BraveVpnService::OnFetchTimezonesSanitized(
+    bool success,
+    data_decoder::JsonSanitizer::Result sanitized_timezones_list) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  std::string timezones_list;
+  if (sanitized_timezones_list.error) {
+    VLOG(1) << "Response validation error: " << *sanitized_timezones_list.error;
+    return;
+  }
+
+  if (!sanitized_timezones_list.value.has_value()) {
+    VLOG(1) << "Empty response";
+    return;
+  }
+
+  timezones_list = sanitized_timezones_list.value.value();
+
   absl::optional<base::Value> value = base::JSONReader::Read(timezones_list);
   if (success && value && value->is_list()) {
     VLOG(2) << "Got valid timezones list";

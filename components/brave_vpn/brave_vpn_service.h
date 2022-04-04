@@ -20,6 +20,7 @@
 #include "components/keyed_service/core/keyed_service.h"
 #include "mojo/public/cpp/bindings/pending_remote.h"
 #include "mojo/public/cpp/bindings/remote_set.h"
+#include "services/data_decoder/public/cpp/json_sanitizer.h"
 #include "services/network/public/cpp/shared_url_loader_factory.h"
 #include "url/gurl.h"
 
@@ -168,6 +169,9 @@ class BraveVpnService :
                          bool success);
   bool ParseAndCacheRegionList(const base::Value& region_value);
   void OnFetchTimezones(const std::string& timezones_list, bool success);
+  void OnFetchTimezonesSanitized(
+      bool success,
+      data_decoder::JsonSanitizer::Result sanitized_timezones_list);
   void ParseAndCacheDeviceRegionName(const base::Value& timezons_value);
   void FetchHostnamesForRegion(const std::string& name);
   void OnFetchHostnames(const std::string& region,
