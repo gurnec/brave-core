@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include "base/memory/raw_ptr.h"
 #include "brave/browser/ui/webui/brave_federated/federated_internals.mojom.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
 #include "ui/webui/mojo_web_ui_controller.h"
@@ -41,7 +42,7 @@ class FederatedInternalsUI
       mojo::PendingReceiver<federated_internals::mojom::PageHandler> receiver)
       override;
 
-  Profile* profile_;
+  raw_ptr<Profile> profile_;
   std::unique_ptr<FederatedInternalsPageHandlerImpl>
       federated_internals_page_handler_;
   mojo::Receiver<federated_internals::mojom::PageHandlerFactory>
