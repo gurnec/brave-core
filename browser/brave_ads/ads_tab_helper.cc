@@ -147,7 +147,19 @@ void AdsTabHelper::DidFinishLoad(content::RenderFrameHost* render_frame_host,
     return;
   }
 
+  if (search_ad_metadata_handler_.IsAllowedBraveSearchHost(validated_url)) {
+    search_ad_metadata_handler_.RetrieveSearchAdMetadata(
+        render_frame_host,
+        base::BindOnce(&AdsTabHelper::OnRetrieveSearchAdMetadata,
+                       weak_factory_.GetWeakPtr()));
+  }
+
   TabUpdated();
+}
+
+void AdsTabHelper::OnRetrieveSearchAdMetadata(SearchResultAdsList search_ads) {
+  // TODO(https://github.com/brave/brave-browser/issues/20852):
+  // Send search ads list to Ads Service.
 }
 
 void AdsTabHelper::MediaStartedPlaying(const MediaPlayerInfo& video_type,

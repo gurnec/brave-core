@@ -3,4 +3,5 @@ include_rules = [
   "-bat/ledger/internal",
   "+bat/ads",
   "-bat/ads/internal",
+  "+services/service_manager/public/cpp",
 ]

@@ -13,11 +13,14 @@
 
 #include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
+#include "brave/browser/brave_ads/search_ad_metadata_handler.h"
 #include "build/build_config.h"
 #include "components/sessions/core/session_id.h"
 #include "content/public/browser/media_player_id.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
+#include "mojo/public/cpp/bindings/remote.h"
+#include "third_party/blink/public/mojom/document_metadata/document_metadata.mojom.h"
 #include "url/gurl.h"
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -25,6 +28,10 @@
 #endif
 
 class Browser;
+
+namespace base {
+class Value;
+}
 
 namespace dom_distiller {
 
@@ -63,6 +70,8 @@ class AdsTabHelper : public content::WebContentsObserver,
 
   void OnJavaScriptTextResult(base::Value value);
 
+  void OnRetrieveSearchAdMetadata(SearchResultAdsList search_ads);
+
   // content::WebContentsObserver overrides
   void DidFinishNavigation(
       content::NavigationHandle* navigation_handle) override;
@@ -90,6 +99,8 @@ class AdsTabHelper : public content::WebContentsObserver,
   bool is_browser_active_ = true;
   std::vector<GURL> redirect_chain_;
   bool should_process_ = false;
+
+  SearchAdMetadataHandler search_ad_metadata_handler_;
 
   base::WeakPtrFactory<AdsTabHelper> weak_factory_;
   WEB_CONTENTS_USER_DATA_KEY_DECL();
