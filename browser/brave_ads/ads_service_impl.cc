@@ -2173,6 +2173,32 @@ void AdsServiceImpl::LogTrainingCovariates(
         log.number_of_tabs = value_as_int;
         break;
       }
+
+      case ads::mojom::CovariateType::kNumberOfBrowserDidBecomeActiveEvents:
+      case ads::mojom::CovariateType::kNumberOfBrowserWindowIsInactiveEvents:
+      case ads::mojom::CovariateType::kNumberOfOpenedNewTabEvents:
+      case ads::mojom::CovariateType::kNumberOfClosedTabEvents:
+      case ads::mojom::CovariateType::kNumberOfFocusedOnExistingTabEvents:
+      case ads::mojom::CovariateType::kNumberOfClickedBackOrForwardNavigationButtonsEvent:
+      case ads::mojom::CovariateType::kNumberOfClickedReloadButtonEvents:
+      case ads::mojom::CovariateType::kNumberOfClickedLinkEvents:
+      case ads::mojom::CovariateType::kNumberOfTypedUrlEvents:
+      case ads::mojom::CovariateType::kNumberOfSubmittedFormEvents:
+      case ads::mojom::CovariateType::kNumberOfPlayedMediaEvents:
+      case ads::mojom::CovariateType::kTimeSinceLastBrowserDidBecomeActiveEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastBrowserWindowIsActiveEvents:
+      case ads::mojom::CovariateType::kTimeSinceLastBrowserWindowIsInactiveEvents:
+      case ads::mojom::CovariateType::kTimeSinceLastOpenedNewTabEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastClosedTabEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastFocusedOnExistingTabEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastClickedReloadButtonEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastClickedLinkEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastTypedUrlEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastSubmittedFormEvent:
+      case ads::mojom::CovariateType::kTimeSinceLastPlayedMediaEvent:
+      case ads::mojom::CovariateType::kLastAdNotificationWasClicked: {
+        break;
+      }
     }
   }
 
