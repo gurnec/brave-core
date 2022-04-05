@@ -1330,7 +1330,6 @@ void BraveVpnService::OnGetSanitizedJsonResponse(
   if (success && !sanitized_json_response.value.has_value()) {
     VLOG(1) << "Empty response";
     success = false;
-    return;
   }
 
   if (success)
