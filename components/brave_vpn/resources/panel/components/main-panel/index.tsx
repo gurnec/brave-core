@@ -11,6 +11,7 @@ import SettingsPanel from '../settings-panel'
 import ContactSupport from '../contact-support'
 import { useSelector, useDispatch } from '../../state/hooks'
 import * as Actions from '../../state/actions'
+import { ConnectionState } from '../../api/panel_browser_api'
 const Flag = React.lazy(() => import('../flag'))
 
 function MainPanel () {
@@ -20,6 +21,7 @@ function MainPanel () {
   const currentRegion = useSelector(state => state.currentRegion)
   const hasError = useSelector(state => state.hasError)
   const isSelectingRegion = useSelector(state => state.isSelectingRegion)
+  const connectionStatus = useSelector(state => state.connectionStatus)
 
   const onSelectRegionButtonClick = () => {
     dispatch(Actions.toggleRegionSelector(true))
@@ -65,6 +67,11 @@ function MainPanel () {
         </S.PanelHeader>
         <S.PanelTitle>{getLocale('braveVpn')}</S.PanelTitle>
         <Toggle />
+        {connectionStatus === ConnectionState.CONNECT_NOT_ALLOWED && (
+          <S.ConnectNotAllowedNote>
+          <div>{getLocale('braveVpnConnectNotAllowed')}</div>
+          </S.ConnectNotAllowedNote>
+        )}
         <S.RegionSelectorButton
           type='button'
           onClick={onSelectRegionButtonClick}
