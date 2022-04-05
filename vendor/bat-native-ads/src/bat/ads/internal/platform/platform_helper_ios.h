@@ -10,26 +10,17 @@
 
 #include "bat/ads/internal/platform/platform_helper.h"
 
-namespace base {
-template <typename T>
-struct DefaultSingletonTraits;
-}  // namespace base
-
 namespace ads {
 
 class PlatformHelperIos final : public PlatformHelper {
  public:
-  PlatformHelperIos(const PlatformHelperIos&) = delete;
-  PlatformHelperIos& operator=(const PlatformHelperIos&) = delete;
-
-  static PlatformHelperIos* GetInstanceImpl();
-
- private:
-  friend struct base::DefaultSingletonTraits<PlatformHelperIos>;
-
   PlatformHelperIos();
   ~PlatformHelperIos() override;
 
+  PlatformHelperIos(const PlatformHelperIos&) = delete;
+  PlatformHelperIos& operator=(const PlatformHelperIos&) = delete;
+
+ private:
   // PlatformHelper impl
   bool IsMobile() const override;
   std::string GetPlatformName() const override;

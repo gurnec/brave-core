@@ -10,26 +10,17 @@
 
 #include "bat/ads/internal/platform/platform_helper.h"
 
-namespace base {
-template <typename T>
-struct DefaultSingletonTraits;
-}  // namespace base
-
 namespace ads {
 
 class PlatformHelperLinux final : public PlatformHelper {
  public:
-  PlatformHelperLinux(const PlatformHelperLinux&) = delete;
-  PlatformHelperLinux& operator=(const PlatformHelperLinux&) = delete;
-
-  static PlatformHelperLinux* GetInstanceImpl();
-
- private:
-  friend struct base::DefaultSingletonTraits<PlatformHelperLinux>;
-
   PlatformHelperLinux();
   ~PlatformHelperLinux() override;
 
+  PlatformHelperLinux(const PlatformHelperLinux&) = delete;
+  PlatformHelperLinux& operator=(const PlatformHelperLinux&) = delete;
+
+ private:
   // PlatformHelper impl
   bool IsMobile() const override;
   std::string GetPlatformName() const override;

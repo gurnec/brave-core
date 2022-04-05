@@ -10,26 +10,17 @@
 
 #include "bat/ads/internal/platform/platform_helper.h"
 
-namespace base {
-template <typename T>
-struct DefaultSingletonTraits;
-}  // namespace base
-
 namespace ads {
 
 class PlatformHelperMac final : public PlatformHelper {
  public:
-  PlatformHelperMac(const PlatformHelperMac&) = delete;
-  PlatformHelperMac& operator=(const PlatformHelperMac&) = delete;
-
-  static PlatformHelperMac* GetInstanceImpl();
-
- private:
-  friend struct base::DefaultSingletonTraits<PlatformHelperMac>;
-
   PlatformHelperMac();
   ~PlatformHelperMac() override;
 
+  PlatformHelperMac(const PlatformHelperMac&) = delete;
+  PlatformHelperMac& operator=(const PlatformHelperMac&) = delete;
+
+ private:
   // PlatformHelper impl
   bool IsMobile() const override;
   std::string GetPlatformName() const override;
