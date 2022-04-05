@@ -58,7 +58,6 @@ TEST_F(FilTxStateManagerUnitTest, FilTxMetaAndValue) {
   const std::string to = "t1h4n7rphclbmwyjcp6jrdiwlfcuwbroxy3jvg33q";
   const std::string from = "t1h5tg3bhp5r56uzgjae2373znti6ygq4agkx4hzq";
   auto tx = std::make_unique<FilTransaction>();
-  tx->set_cid("cid");
   tx->set_nonce(1);
   tx->set_gas_premium("2");
   tx->set_fee_cap("3");
