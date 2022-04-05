@@ -8,7 +8,6 @@
 
 #include <memory>
 
-#include "base/memory/singleton.h"
 #include "base/win/windows_types.h"
 #include "brave/browser/brave_ads/background_helper/background_helper.h"
 #include "ui/gfx/win/singleton_hwnd_observer.h"
@@ -17,23 +16,19 @@ namespace brave_ads {
 
 class BackgroundHelperWin : public BackgroundHelper {
  public:
-  BackgroundHelperWin(const BackgroundHelperWin&) = delete;
-  BackgroundHelperWin& operator=(const BackgroundHelperWin&) = delete;
-
-  static BackgroundHelperWin* GetInstance();
-
- private:
-  friend struct base::DefaultSingletonTraits<BackgroundHelperWin>;
-
   BackgroundHelperWin();
   ~BackgroundHelperWin() override;
 
-  void OnWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+  BackgroundHelperWin(const BackgroundHelperWin&) = delete;
+  BackgroundHelperWin& operator=(const BackgroundHelperWin&) = delete;
 
-  std::unique_ptr<gfx::SingletonHwndObserver> singleton_hwnd_observer_;
+ private:
+  void OnWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
   // BackgroundHelper impl
   bool IsForeground() const override;
+
+  std::unique_ptr<gfx::SingletonHwndObserver> singleton_hwnd_observer_;
 };
 
 }  // namespace brave_ads

@@ -67,12 +67,4 @@ bool BackgroundHelperMac::IsForeground() const {
   return [[NSApplication sharedApplication] isActive];
 }
 
-BackgroundHelperMac* BackgroundHelperMac::GetInstance() {
-  return base::Singleton<BackgroundHelperMac>::get();
-}
-
-BackgroundHelper* BackgroundHelper::GetInstance() {
-  return BackgroundHelperMac::GetInstance();
-}
-
 }  // namespace brave_ads

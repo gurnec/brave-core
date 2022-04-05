@@ -8,7 +8,6 @@
 
 #include "base/compiler_specific.h"
 #include "base/mac/scoped_nsobject.h"
-#include "base/memory/singleton.h"
 #include "brave/browser/brave_ads/background_helper/background_helper.h"
 
 @class BackgroundHelperDelegate;
@@ -17,21 +16,17 @@ namespace brave_ads {
 
 class BackgroundHelperMac : public BackgroundHelper {
  public:
-  BackgroundHelperMac(const BackgroundHelperMac&) = delete;
-  BackgroundHelperMac& operator=(const BackgroundHelperMac&) = delete;
-
-  static BackgroundHelperMac* GetInstance();
-
- private:
-  friend struct base::DefaultSingletonTraits<BackgroundHelperMac>;
-
   BackgroundHelperMac();
   ~BackgroundHelperMac() override;
 
-  base::scoped_nsobject<BackgroundHelperDelegate> delegate_;
+  BackgroundHelperMac(const BackgroundHelperMac&) = delete;
+  BackgroundHelperMac& operator=(const BackgroundHelperMac&) = delete;
 
+ private:
   // BackgroundHelper impl
   bool IsForeground() const override;
+
+  base::scoped_nsobject<BackgroundHelperDelegate> delegate_;
 };
 
 }  // namespace brave_ads
