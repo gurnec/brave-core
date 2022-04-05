@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <utility>
+
 #include "base/environment.h"
 #include "base/feature_list.h"
 #include "base/logging.h"
@@ -29,7 +30,6 @@
 #include "components/prefs/pref_service.h"
 #include "components/prefs/scoped_user_pref_update.h"
 #include "crypto/random.h"
-#include "net/base/data_url.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "third_party/boringssl/src/include/openssl/evp.h"
@@ -952,20 +952,6 @@ absl::optional<std::string> GetPrefKeyForCoinType(mojom::CoinType coin) {
 std::string eTLDPlusOne(const GURL& url) {
   return net::registry_controlled_domains::GetDomainAndRegistry(
       url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
-}
-
-bool ParseDataURIAndExtractJSON(const GURL url, std::string* json) {
-  std::string mime_type, charset, data;
-  if (!net::DataURL::Parse(url, &mime_type, &charset, &data) || data.empty()) {
-    return false;
-  }
-
-  if (mime_type != "application/json") {
-    return false;
-  }
-
-  *json = data;
-  return true;
 }
 
 }  // namespace brave_wallet
