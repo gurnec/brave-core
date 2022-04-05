@@ -1006,6 +1006,7 @@ source_set("ads") {
     "//base",
     "//brave/common",
     "//brave/components/brave_adaptive_captcha/buildflags",
+    "//brave/components/brave_federated/public/interfaces",
     "//brave/components/challenge_bypass_ristretto",
     "//brave/components/l10n/browser",
     "//brave/components/l10n/common",
