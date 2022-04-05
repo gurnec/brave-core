@@ -59,18 +59,3 @@ source_set("brave_federated_tests") {
     "//third_party/re2",
   ]
 }
-
-js_type_check("closure_compile") {
-  deps = [ ":federated_internals" ]
-}
-
-js_library("federated_internals") {
-  sources = [
-    "resources/federated_internals.js",
-    "resources/federated_internals_browser_proxy.js",
-  ]
-  deps = [
-    "//brave/browser/ui/webui/brave_federated:mojo_bindings_webui_js",
-    "//ui/webui/resources/js:util.m",
-  ]
-}

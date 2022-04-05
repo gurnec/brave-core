@@ -19,7 +19,7 @@ namespace brave_federated {
 class DataStoreService;
 }  // namespace brave_federated
 
-class FederatedInternalsPageHandlerImpl;
+class FederatedInternalsPageHandler;
 
 class FederatedInternalsUI
     : public ui::MojoWebUIController,
@@ -43,7 +43,7 @@ class FederatedInternalsUI
       override;
 
   raw_ptr<Profile> profile_;
-  std::unique_ptr<FederatedInternalsPageHandlerImpl>
+  std::unique_ptr<FederatedInternalsPageHandler>
       federated_internals_page_handler_;
   mojo::Receiver<federated_internals::mojom::PageHandlerFactory>
       federated_internals_page_factory_receiver_{this};

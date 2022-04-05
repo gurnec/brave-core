@@ -79,7 +79,7 @@ bool AdNotificationTimingDataStore::Init(int task_id,
     return false;
   }
 
-  AddTestLogs();
+  AddLogsForTesting();
   return true;
 }
 
@@ -146,7 +146,7 @@ void AdNotificationTimingDataStore::EnforceRetentionPolicy() {
   DataStore::EnforceRetentionPolicy();
 }
 
-void AdNotificationTimingDataStore::AddTestLogs() {
+void AdNotificationTimingDataStore::AddLogsForTesting() {
   base::Time time = base::Time::Now();
   std::string locale = "lo";
   int number_of_tabs = 5;
