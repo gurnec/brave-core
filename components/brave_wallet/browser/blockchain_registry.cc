@@ -104,13 +104,13 @@ void BlockchainRegistry::GetBuyTokens(mojom::OnRampProvider provider,
                                       const std::string& chain_id,
                                       GetBuyTokensCallback callback) {
   std::vector<brave_wallet::mojom::BlockchainTokenPtr> blockchain_buy_tokens;
-  std::vector<mojom::BlockchainToken> buy_tokens;
+  std::vector<mojom::BlockchainToken>* buy_tokens = nullptr;
   if (provider == mojom::OnRampProvider::Wyre)
-    buy_tokens = *kWyreBuyTokens;
+    buy_tokens = &GetWyreBuyTokens();
   else if (provider == mojom::OnRampProvider::Ramp)
-    buy_tokens = *kRampBuyTokens;
+    buy_tokens = &GetRampBuyTokens();
 
-  for (auto token : buy_tokens) {
+  for (const auto& token : *buy_tokens) {
     if (token.chain_id != chain_id) {
       continue;
     }
@@ -128,7 +128,7 @@ void BlockchainRegistry::GetBuyUrl(mojom::OnRampProvider provider,
                                    const std::string& symbol,
                                    const std::string& amount,
                                    GetBuyUrlCallback callback) {
-  std::string url = "";
+  std::string url;
   if (provider == mojom::OnRampProvider::Wyre) {
     if (chain_id != mojom::kMainnetChainId) {
       std::move(callback).Run(url, "UNSUPPORTED_NETWORK");
@@ -137,7 +137,7 @@ void BlockchainRegistry::GetBuyUrl(mojom::OnRampProvider provider,
 
     url = base::StringPrintf(kWyreBuyUrl, address.c_str(), symbol.c_str(),
                              amount.c_str(), kWyreID);
-    std::move(callback).Run(url, absl::nullopt);
+    std::move(callback).Run(std::move(url), absl::nullopt);
   } else if (provider == mojom::OnRampProvider::Ramp) {
     if (chain_id != mojom::kMainnetChainId) {
       std::move(callback).Run(url, "UNSUPPORTED_NETWORK");
@@ -146,7 +146,7 @@ void BlockchainRegistry::GetBuyUrl(mojom::OnRampProvider provider,
 
     url = base::StringPrintf(kRampBuyUrl, address.c_str(), symbol.c_str(),
                              amount.c_str());
-    std::move(callback).Run(url, absl::nullopt);
+    std::move(callback).Run(std::move(url), absl::nullopt);
   } else
     std::move(callback).Run(url, "UNSUPPORTED_ONRAMP_PROVIDER");
 }
