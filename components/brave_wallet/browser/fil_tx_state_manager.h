@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 
+#include "base/gtest_prod_util.h"
 #include "brave/components/brave_wallet/browser/tx_state_manager.h"
 
 class PrefService;

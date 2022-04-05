@@ -137,4 +137,12 @@ TEST(FilTransactionUnitTest, GetMessageToSign) {
             "\"t1h4n7rphclbmwyjcp6jrdiwlfcuwbroxy3jvg33q\",\"value\":\"6\"}");
 }
 
+TEST(FilTransactionUnitTest, ToFilTxData) {
+  auto tx_data =
+      mojom::FilTxData::New("1", "2", "3", "1", "5",
+                            "t1h4n7rphclbmwyjcp6jrdiwlfcuwbroxy3jvg33q", "6");
+  auto transaction = FilTransaction::FromTxData(tx_data);
+  EXPECT_EQ(transaction->ToFilTxData(), tx_data);
+}
+
 }  // namespace brave_wallet
