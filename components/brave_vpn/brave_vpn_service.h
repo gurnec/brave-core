@@ -170,7 +170,8 @@ class BraveVpnService :
   bool ParseAndCacheRegionList(const base::Value& region_value);
   void OnFetchTimezones(const std::string& timezones_list, bool success);
   void OnFetchTimezonesSanitized(
-      bool success,
+      data_decoder::JsonSanitizer::Result sanitized_timezones_list);
+  void HandleSanitizedTimezonesList(
       data_decoder::JsonSanitizer::Result sanitized_timezones_list);
   void ParseAndCacheDeviceRegionName(const base::Value& timezons_value);
   void FetchHostnamesForRegion(const std::string& name);

@@ -609,15 +609,30 @@ bool BraveVpnService::ParseAndCacheRegionList(const base::Value& region_value) {
 void BraveVpnService::OnFetchTimezones(const std::string& timezones_list,
                                        bool success) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  if (!success) {
+    // Can set as purchased state now although timezone fetching failed.
+    // Instead, We use default one picked from region list as a device region.
+    SetPurchasedState(PurchasedState::PURCHASED);
+    return;
+  }
+
   // Extra step: sanitize the returned JSON
   data_decoder::JsonSanitizer::Sanitize(
       timezones_list,
       base::BindOnce(&BraveVpnService::OnFetchTimezonesSanitized,
-                     weak_ptr_factory_.GetWeakPtr(), success));
+                     weak_ptr_factory_.GetWeakPtr()));
 }
 
 void BraveVpnService::OnFetchTimezonesSanitized(
-    bool success,
+    data_decoder::JsonSanitizer::Result sanitized_timezones_list) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  HandleSanitizedTimezonesList(std::move(sanitized_timezones_list));
+  // Can set as purchased state now regardless of sanitizing result.
+  // Instead, We can default one picked from region list as a device region.
+  SetPurchasedState(PurchasedState::PURCHASED);
+}
+
+void BraveVpnService::HandleSanitizedTimezonesList(
     data_decoder::JsonSanitizer::Result sanitized_timezones_list) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 
@@ -635,15 +650,12 @@ void BraveVpnService::OnFetchTimezonesSanitized(
   timezones_list = sanitized_timezones_list.value.value();
 
   absl::optional<base::Value> value = base::JSONReader::Read(timezones_list);
-  if (success && value && value->is_list()) {
+  if (value && value->is_list()) {
     VLOG(2) << "Got valid timezones list";
     ParseAndCacheDeviceRegionName(*value);
   } else {
     VLOG(2) << "Failed to get invalid timezones list";
   }
-
-  // Anyway, it's purchased now.
-  SetPurchasedState(PurchasedState::PURCHASED);
 }
 
 void BraveVpnService::ParseAndCacheDeviceRegionName(

@@ -23,6 +23,7 @@
 #include "components/sync_preferences/testing_pref_service_syncable.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/test/browser_task_environment.h"
+#include "services/data_decoder/public/cpp/json_sanitizer.h"
 #include "services/network/test/test_shared_url_loader_factory.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
@@ -66,7 +67,14 @@ class BraveVPNServiceTest : public testing::Test {
   }
 
   void OnFetchTimezones(const std::string& timezones_list, bool success) {
-    service_->OnFetchTimezones(timezones_list, success);
+    if (!success) {
+      service_->OnFetchTimezones(timezones_list, success);
+      return;
+    }
+
+    data_decoder::JsonSanitizer::Result result;
+    result.value = timezones_list;
+    service_->OnFetchTimezonesSanitized(std::move(result));
   }
 
   void OnFetchHostnames(const std::string& region,
@@ -341,6 +349,12 @@ TEST_F(BraveVPNServiceTest, RegionDataTest) {
   SetTestTimezone("Invalid");
   OnFetchTimezones(GetTimeZonesData(), true);
   EXPECT_EQ(regions()[0], device_region());
+
+  // Test device region is not changed when invalid timezone is set.
+  SetFallbackDeviceRegion();
+  SetTestTimezone("Invalid");
+  OnFetchTimezones(GetTimeZonesData(), true);
+  EXPECT_EQ(regions()[0], device_region());
 }
 
 TEST_F(BraveVPNServiceTest, HostnamesTest) {
@@ -385,6 +399,11 @@ TEST_F(BraveVPNServiceTest, LoadPurchasedStateTest) {
   EXPECT_EQ(PurchasedState::LOADING, purchased_state());
   SetTestTimezone("Asia/Seoul");
   OnFetchTimezones(GetTimeZonesData(), true);
+  EXPECT_EQ(PurchasedState::PURCHASED, purchased_state());
+
+  // Check purchased is set when fetching timezone is failed.
+  purchased_state() = PurchasedState::LOADING;
+  OnFetchTimezones("", false);
   EXPECT_EQ(PurchasedState::PURCHASED, purchased_state());
 
   // Treat not purchased when empty.
