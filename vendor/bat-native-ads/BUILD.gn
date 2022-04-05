@@ -1025,5 +1025,8 @@ source_set("ads") {
     rebase_path("brave_base", dep_base),
   ]
 
-  public_deps = [ ":headers" ]
+  public_deps = [
+    ":headers",
+    "//brave/components/brave_federated/public/interfaces",
+  ]
 }
