@@ -152,8 +152,7 @@ std::string GetSubscriberCredentialFromJson(const std::string& json) {
                     base::JSONParserOptions::JSON_PARSE_RFC);
   absl::optional<base::Value>& records_v = value_with_error.value;
   if (!records_v) {
-    VLOG(1) << __func__
-            << "Invalid response, could not parse JSON, JSON is: " << json;
+    VLOG(1) << __func__ << "Invalid response, could not parse JSON.";
     return "";
   }
 
@@ -807,7 +806,6 @@ void BraveVpnService::CreateSupportTicket(
   dict.SetStringKey("payment-validation-data", "");
 
   std::string request_body = CreateJSONRequestBody(dict);
-  VLOG(2) << " : sending " << request_body;
   OAuthRequest(base_url, "POST", request_body, std::move(internal_callback));
 }
 
@@ -1028,7 +1026,7 @@ void BraveVpnService::OnCreateSupportTicket(
     const base::flat_map<std::string, std::string>& headers) {
   bool success = status == 200;
   VLOG(2) << "OnCreateSupportTicket success=" << success
-          << "\nresponse_code=" << status << "\nbody=[[" << body << "]]";
+          << "\nresponse_code=" << status;
   std::move(callback).Run(success, body);
 }
 #endif  // !BUILDFLAG(IS_ANDROID)
@@ -1092,8 +1090,6 @@ void BraveVpnService::OnCredentialSummary(const std::string& summary_string) {
     return;
   }
 
-  VLOG(2) << __func__ << " credential_summary returned: `" << summary_string
-          << "`";
   base::JSONReader::ValueWithError value_with_error =
       base::JSONReader::ReadAndReturnValueWithError(
           summary_string, base::JSONParserOptions::JSON_PARSE_RFC);
