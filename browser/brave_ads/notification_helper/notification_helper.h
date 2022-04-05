@@ -6,8 +6,6 @@
 #ifndef BRAVE_BROWSER_BRAVE_ADS_NOTIFICATION_HELPER_NOTIFICATION_HELPER_H_
 #define BRAVE_BROWSER_BRAVE_ADS_NOTIFICATION_HELPER_NOTIFICATION_HELPER_H_
 
-#include "base/memory/singleton.h"
-
 namespace brave_ads {
 
 class NotificationHelper {
@@ -17,8 +15,6 @@ class NotificationHelper {
 
   static NotificationHelper* GetInstance();
 
-  void set_for_testing(NotificationHelper* notification_helper);
-
   virtual bool CanShowNativeNotifications();
 
   virtual bool CanShowBackgroundNotifications() const;
@@ -26,8 +22,6 @@ class NotificationHelper {
   virtual bool ShowMyFirstAdNotification();
 
  protected:
-  friend struct base::DefaultSingletonTraits<NotificationHelper>;
-
   NotificationHelper();
   virtual ~NotificationHelper();
 

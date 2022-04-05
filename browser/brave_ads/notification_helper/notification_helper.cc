@@ -5,20 +5,30 @@
 
 #include "brave/browser/brave_ads/notification_helper/notification_helper.h"
 
+#include "base/no_destructor.h"
 #include "build/build_config.h"
 
-namespace brave_ads {
+#if BUILDFLAG(IS_ANDROID)
+#include "brave/browser/brave_ads/notification_helper/notification_helper_android.h"
+#endif  // BUILDFLAG(IS_ANDROID)
 
-NotificationHelper* g_notification_helper_for_testing = nullptr;
+#if BUILDFLAG(IS_LINUX)
+#include "brave/browser/brave_ads/notification_helper/notification_helper_linux.h"
+#endif  // BUILDFLAG(IS_LINUX)
+
+#if BUILDFLAG(IS_MAC)
+#include "brave/browser/brave_ads/notification_helper/notification_helper_mac.h"
+#endif  // BUILDFLAG(IS_MAC)
+
+#if BUILDFLAG(IS_WIN)
+#include "brave/browser/brave_ads/notification_helper/notification_helper_win.h"
+#endif  // BUILDFLAG(IS_WIN)
+
+namespace brave_ads {
 
 NotificationHelper::NotificationHelper() = default;
 
 NotificationHelper::~NotificationHelper() = default;
-
-void NotificationHelper::set_for_testing(
-    NotificationHelper* notification_helper) {
-  g_notification_helper_for_testing = notification_helper;
-}
 
 bool NotificationHelper::CanShowNativeNotifications() {
   return true;
@@ -33,19 +43,20 @@ bool NotificationHelper::ShowMyFirstAdNotification() {
 }
 
 NotificationHelper* NotificationHelper::GetInstance() {
-  if (g_notification_helper_for_testing) {
-    return g_notification_helper_for_testing;
-  }
-
-  return GetInstanceImpl();
-}
-
-#if !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_WIN) && !BUILDFLAG(IS_LINUX) && \
-    !BUILDFLAG(IS_ANDROID)
-NotificationHelper* NotificationHelper::GetInstanceImpl() {
+#if BUILDFLAG(IS_ANDROID)
+  static base::NoDestructor<NotificationHelperAndroid> notification_helper;
+#elif BUILDFLAG(IS_LINUX)
+  static base::NoDestructor<NotificationHelperLinux> notification_helper;
+#elif BUILDFLAG(IS_MAC)
+  static base::NoDestructor<NotificationHelperMac> notification_helper;
+#elif BUILDFLAG(IS_WIN)
+  static base::NoDestructor<NotificationHelperWin> notification_helper;
+#else
   // Return a default notification helper for unsupported platforms
-  return base::Singleton<NotificationHelper>::get();
+  static base::NoDestructor<NotificationHelper> notification_helper;
+#endif  // BUILDFLAG(IS_ANDROID)
+
+  return notification_helper.get();
 }
-#endif
 
 }  // namespace brave_ads

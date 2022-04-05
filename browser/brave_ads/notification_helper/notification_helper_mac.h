@@ -15,17 +15,13 @@ class NotificationHelperMac
     : public NotificationHelper,
       public base::SupportsWeakPtr<NotificationHelperMac> {
  public:
-  NotificationHelperMac(const NotificationHelperMac&) = delete;
-  NotificationHelperMac& operator=(const NotificationHelperMac&) = delete;
-
-  static NotificationHelperMac* GetInstanceImpl();
-
- private:
-  friend struct base::DefaultSingletonTraits<NotificationHelperMac>;
-
   NotificationHelperMac();
   ~NotificationHelperMac() override;
 
+  NotificationHelperMac(const NotificationHelperMac&) = delete;
+  NotificationHelperMac& operator=(const NotificationHelperMac&) = delete;
+
+ private:
   // NotificationHelper:
   bool CanShowNativeNotifications() override;
 

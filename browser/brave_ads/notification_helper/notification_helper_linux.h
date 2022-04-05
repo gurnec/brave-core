@@ -15,17 +15,13 @@ class NotificationHelperLinux
     : public NotificationHelper,
       public base::SupportsWeakPtr<NotificationHelperLinux> {
  public:
-  NotificationHelperLinux(const NotificationHelperLinux&) = delete;
-  NotificationHelperLinux& operator=(const NotificationHelperLinux&) = delete;
-
-  static NotificationHelperLinux* GetInstanceImpl();
-
- private:
-  friend struct base::DefaultSingletonTraits<NotificationHelperLinux>;
-
   NotificationHelperLinux();
   ~NotificationHelperLinux() override;
 
+  NotificationHelperLinux(const NotificationHelperLinux&) = delete;
+  NotificationHelperLinux& operator=(const NotificationHelperLinux&) = delete;
+
+ private:
   // NotificationHelper:
   bool CanShowNativeNotifications() override;
 
