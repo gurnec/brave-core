@@ -23,7 +23,6 @@
 #include "components/sync_preferences/testing_pref_service_syncable.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/test/browser_task_environment.h"
-#include "services/data_decoder/public/cpp/json_sanitizer.h"
 #include "services/network/test/test_shared_url_loader_factory.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
@@ -67,14 +66,7 @@ class BraveVPNServiceTest : public testing::Test {
   }
 
   void OnFetchTimezones(const std::string& timezones_list, bool success) {
-    if (!success) {
-      service_->OnFetchTimezones(timezones_list, success);
-      return;
-    }
-
-    data_decoder::JsonSanitizer::Result result;
-    result.value = timezones_list;
-    service_->OnFetchTimezonesSanitized(std::move(result));
+    service_->OnFetchTimezones(timezones_list, success);
   }
 
   void OnFetchHostnames(const std::string& region,

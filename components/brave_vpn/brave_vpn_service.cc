@@ -453,7 +453,8 @@ void BraveVpnService::GetConnectionState(GetConnectionStateCallback callback) {
 void BraveVpnService::ResetConnectionState() {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   // Reset is allowed only when it has failed state.
-  if (connection_state_ != ConnectionState::CONNECT_NOT_ALLOWED && connection_state_ != ConnectionState::CONNECT_FAILED)
+  if (connection_state_ != ConnectionState::CONNECT_NOT_ALLOWED &&
+      connection_state_ != ConnectionState::CONNECT_FAILED)
     return;
 
   UpdateAndNotifyConnectionStateChange(ConnectionState::DISCONNECTED, true);
@@ -619,53 +620,18 @@ bool BraveVpnService::ParseAndCacheRegionList(const base::Value& region_value) {
 void BraveVpnService::OnFetchTimezones(const std::string& timezones_list,
                                        bool success) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-  if (!success) {
-    // Can set as purchased state now although timezone fetching failed.
-    // Instead, We use default one picked from region list as a device region.
-    SetPurchasedState(PurchasedState::PURCHASED);
-    return;
-  }
-
-  // Extra step: sanitize the returned JSON
-  data_decoder::JsonSanitizer::Sanitize(
-      timezones_list,
-      base::BindOnce(&BraveVpnService::OnFetchTimezonesSanitized,
-                     weak_ptr_factory_.GetWeakPtr()));
-}
-
-void BraveVpnService::OnFetchTimezonesSanitized(
-    data_decoder::JsonSanitizer::Result sanitized_timezones_list) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-  HandleSanitizedTimezonesList(std::move(sanitized_timezones_list));
-  // Can set as purchased state now regardless of sanitizing result.
-  // Instead, We can default one picked from region list as a device region.
-  SetPurchasedState(PurchasedState::PURCHASED);
-}
-
-void BraveVpnService::HandleSanitizedTimezonesList(
-    data_decoder::JsonSanitizer::Result sanitized_timezones_list) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-
-  std::string timezones_list;
-  if (sanitized_timezones_list.error) {
-    VLOG(1) << "Response validation error: " << *sanitized_timezones_list.error;
-    return;
-  }
-
-  if (!sanitized_timezones_list.value.has_value()) {
-    VLOG(1) << "Empty response";
-    return;
-  }
-
-  timezones_list = sanitized_timezones_list.value.value();
 
   absl::optional<base::Value> value = base::JSONReader::Read(timezones_list);
-  if (value && value->is_list()) {
+  if (success && value && value->is_list()) {
     VLOG(2) << "Got valid timezones list";
     ParseAndCacheDeviceRegionName(*value);
   } else {
     VLOG(2) << "Failed to get invalid timezones list";
   }
+
+  // Can set as purchased state now regardless of timezone fetching result.
+  // We use default one picked from region list as a device region on failure.
+  SetPurchasedState(PurchasedState::PURCHASED);
 }
 
 void BraveVpnService::ParseAndCacheDeviceRegionName(
@@ -1341,8 +1307,39 @@ void BraveVpnService::OnGetResponse(
   std::string json_response;
   bool success = status == 200;
   if (success) {
+    // Give sanitized json response on success.
     json_response = body;
+    data_decoder::JsonSanitizer::Sanitize(
+        json_response,
+        base::BindOnce(&BraveVpnService::OnGetSanitizedJsonResponse,
+                       weak_ptr_factory_.GetWeakPtr(), std::move(callback)));
+  } else {
+    // Give empty response on failure.
+    std::move(callback).Run(json_response, success);
   }
+}
+
+void BraveVpnService::OnGetSanitizedJsonResponse(
+    ResponseCallback callback,
+    data_decoder::JsonSanitizer::Result sanitized_json_response) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  std::string json_response;
+  bool success = true;
+  if (sanitized_json_response.error) {
+    VLOG(1) << "Response validation error: " << *sanitized_json_response.error;
+    success = false;
+  }
+
+  if (success && !sanitized_json_response.value.has_value()) {
+    VLOG(1) << "Empty response";
+    success = false;
+    return;
+  }
+
+  if (success)
+    json_response = sanitized_json_response.value.value();
+
   std::move(callback).Run(json_response, success);
 }
 

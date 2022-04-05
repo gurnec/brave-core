@@ -171,10 +171,6 @@ class BraveVpnService :
                          bool success);
   bool ParseAndCacheRegionList(const base::Value& region_value);
   void OnFetchTimezones(const std::string& timezones_list, bool success);
-  void OnFetchTimezonesSanitized(
-      data_decoder::JsonSanitizer::Result sanitized_timezones_list);
-  void HandleSanitizedTimezonesList(
-      data_decoder::JsonSanitizer::Result sanitized_timezones_list);
   void ParseAndCacheDeviceRegionName(const base::Value& timezons_value);
   void FetchHostnamesForRegion(const std::string& name);
   void OnFetchHostnames(const std::string& region,
@@ -226,6 +222,9 @@ class BraveVpnService :
                      int status,
                      const std::string& body,
                      const base::flat_map<std::string, std::string>& headers);
+  void OnGetSanitizedJsonResponse(
+      ResponseCallback callback,
+      data_decoder::JsonSanitizer::Result sanitized_json_response);
 
   void OnGetSubscriberCredential(
       ResponseCallback callback,
