@@ -1,8 +1,26 @@
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_view.cc b/chrome/browser/ui/views/toolbar/toolbar_view.cc
-index 8dceab5d386ec7bd3cc51c8ba2d29136854948fa..40f6daadf453959e8cc5ae03babc8eddcc7824ca 100644
+index 8dceab5d386ec7bd3cc51c8ba2d29136854948fa..24158d4021c7e79a6a94f1ca8d6da4e00dcfae25 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_view.cc
 +++ b/chrome/browser/ui/views/toolbar/toolbar_view.cc
-@@ -370,6 +370,7 @@ void ToolbarView::Init() {
+@@ -79,6 +79,7 @@
+ #include "components/autofill/core/common/autofill_payments_features.h"
+ #include "components/omnibox/browser/omnibox_view.h"
+ #include "components/prefs/pref_service.h"
++#include "components/reading_list/features/reading_list_switches.h"
+ #include "components/safe_browsing/core/common/features.h"
+ #include "components/send_tab_to_self/features.h"
+ #include "components/signin/public/base/signin_buildflags.h"
+@@ -302,7 +303,8 @@ void ToolbarView::Init() {
+   }
+ 
+   std::unique_ptr<SidePanelToolbarButton> side_panel_button;
+-  if (browser_view_->right_aligned_side_panel()) {
++  if (browser_view_->right_aligned_side_panel() &&
++      reading_list::switches::IsSidePanelEnabled()) {
+     side_panel_button = std::make_unique<SidePanelToolbarButton>(browser_);
+   }
+ 
+@@ -370,6 +372,7 @@ void ToolbarView::Init() {
    } else {
      // TODO(crbug.com/932818): Remove this once the
      // |kAutofillEnableToolbarStatusChip| is fully launched.
